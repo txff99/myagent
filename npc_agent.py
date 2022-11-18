@@ -24,8 +24,9 @@ from visual.distance_detection.yolov5.detect import run
 from visual.lane_detection.Lane_Detection.Lane_Detection_window import parse_image
 from visual.lane_detection.advanced_lane_detection.line_fit_video import annotate_image
 from mapping.mapping import mapping
+from mapping.global_map import global_mapping
 import numpy as np
-# from mapping.stitching.stitching import Stitcher
+from mapping.location2np import carla_location_to_numpy_vector
 class NpcAgent(AutonomousAgent):
 
     """
@@ -39,7 +40,7 @@ class NpcAgent(AutonomousAgent):
         """
         Setup the agent parameters
         """
-
+        self.route=[]
         self._route_assigned = False
         self._agent = None
 
@@ -87,17 +88,17 @@ class NpcAgent(AutonomousAgent):
         # a=run(img = input_data["Right"][1][:,:,:3])
         # a=light_detect(input_data["Right"][1][:,:,:3])
         
-        a = input_data["Middle"][1][:,:,:3]  
-        # r=input_data["rowright"][1][:,:,:3]
-        # l=input_data["rowleft"][1][:,:,:3]
-        # stitcher = Stitcher()
-        # paro = stitcher.stitch(a, r, l)
-        img,map = mapping(a)
-        # com = np.concatenate((img),axis=1)
-        cv2.imshow('middle',img)
-        cv2.waitKey(50)
-        cv2.imshow('map',map)
-        cv2.waitKey(50)
+        # a = input_data["Middle"][1][:,:,:3]  
+        # # r=input_data["rowright"][1][:,:,:3]
+        # # l=input_data["rowleft"][1][:,:,:3]
+        # # stitcher = Stitcher()
+        # # paro = stitcher.stitch(a, r, l)
+        # img,map = mapping(a)
+        # # com = np.concatenate((img),axis=1)
+        # cv2.imshow('middle',img)
+        # cv2.waitKey(50)
+        # cv2.imshow('map',map)
+        # cv2.waitKey(50)
         # cv2.imshow('left',com)
         # cv2.waitKey(50)
         
@@ -144,23 +145,32 @@ class NpcAgent(AutonomousAgent):
         if not self._route_assigned:
             if self._global_plan:
                 plan = []
-
+                
                 for transform, road_option in self._global_plan_world_coord:
                     wp = CarlaDataProvider.get_map().get_waypoint(transform.location)
                     plan.append((wp, road_option))
-
-                print(plan[0][0])
-                print(plan[1][0])
-                print(plan[2][0])
-                print(plan[3][0])
-                print(len(plan))
+                    # print(carla_location_to_numpy_vector(transform.location))
+                    self.route.append(carla_location_to_numpy_vector(transform.location))
+                # print(len(route))
+                # print(plan[0][0])
+                # print(plan[1][0])
+                # print(plan[2][0])
+                # print(plan[3][0])
+                # print(len(plan))
                 # exit()
-
+                
                 self._agent._local_planner.set_global_plan(plan)  # pylint: disable=protected-access
                 self._route_assigned = True
         
         else:
-            control = self._agent.run_step()
+            pack = self._agent.run_step()
+            # print(pack)
+            if len(pack)>1:
+                control,location,local_route=pack
+                global_mapping(self.route,location,local_route)
+            else:
+                control = pack[0]
+
 
         return control
 
