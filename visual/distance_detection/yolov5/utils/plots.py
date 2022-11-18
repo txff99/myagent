@@ -76,6 +76,7 @@ class Annotator:
         assert im.data.contiguous, 'Image not contiguous. Apply np.ascontiguousarray(im) to Annotator() input images.'
         non_ascii = not is_ascii(example)  # non-latin labels, i.e. asian, arabic, cyrillic
         self.pil = pil or non_ascii
+        self.content = []
         if self.pil:  # use PIL
             self.im = im if isinstance(im, Image.Image) else Image.fromarray(im)
             self.draw = ImageDraw.Draw(self.im)
@@ -84,6 +85,9 @@ class Annotator:
         else:  # use cv2
             self.im = im
         self.lw = line_width or max(round(sum(im.shape) / 2 * 0.003), 2)  # line width
+
+    def new_img(self):
+        self.content=[]
 
     def box_label(self, box, label='', color=(128, 128, 128), txt_color=(255, 255, 255)):
         res = "".join([ele for ele in label if ele.isdigit()])
@@ -120,12 +124,12 @@ class Annotator:
                                 lineType=cv2.LINE_AA)
                     #car distance
                     if 'truck' in label:
-                        original_height = 90 # in inch
+                        original_height = 60 # in inch
                     elif 'car' in label:
-                        original_height = 60
+                        original_height = 80
                     else:
-                        original_height = 20
-                    height = box[2]-box[0]  
+                        original_height = 40
+                    height = box[3]-box[1]  
                     f = 250 # focal length
                     # d = (car_original_width * f)/ width
                     d = (original_height * f)/ height
@@ -140,6 +144,7 @@ class Annotator:
                                 txt_color,
                                 thickness=tf,
                                 lineType=cv2.LINE_AA)
+                    self.content.append([(box[2]+box[0])/2,d,label])#add vehicle location
 
     def masks(self, masks, colors, im_gpu=None, alpha=0.5):
         """Plot masks at once.

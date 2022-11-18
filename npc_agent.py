@@ -23,8 +23,9 @@ from visual.traffic_light.TrafficLight_Detector.src.main import light_detect
 from visual.distance_detection.yolov5.detect import run
 from visual.lane_detection.Lane_Detection.Lane_Detection_window import parse_image
 from visual.lane_detection.advanced_lane_detection.line_fit_video import annotate_image
-
+from mapping.mapping import mapping
 import numpy as np
+# from mapping.stitching.stitching import Stitcher
 class NpcAgent(AutonomousAgent):
 
     """
@@ -64,12 +65,14 @@ class NpcAgent(AutonomousAgent):
         sensors = [
             {'type': 'sensor.camera.rgb', 'x': 1.7, 'y': -0.4, 'z': 1.60, 'roll': 0.0, 'pitch': 0.0, 'yaw': 0.0,
              'width': 1280, 'height': 720, 'fov': 100, 'id': 'Left'},
+            {'type': 'sensor.camera.rgb', 'x': 1.7, 'y': 0, 'z': 1.60, 'roll': 0.0, 'pitch': -5.0, 'yaw': 0.0,
+             'width': 1500, 'height': 500, 'fov': 125, 'id': 'Middle'},
             {'type': 'sensor.camera.rgb', 'x': 1.7, 'y': 0.4, 'z': 1.60, 'roll': 0.0, 'pitch': 5.0, 'yaw': 0.0,
              'width': 1000, 'height': 600, 'shutter_speed': 100,'fov': 20, 'id': 'Right'},
-            {'type': 'sensor.camera.rgb', 'x': 1.7, 'y': 0.4, 'z': 1.60, 'roll': -0.0, 'pitch': 2.0, 'yaw': 15.0,
-             'width': 500, 'height': 300, 'shutter_speed': 100,'fov': 30, 'id': 'rowleft'},
-            {'type': 'sensor.camera.rgb', 'x': 1.7, 'y': 0.4, 'z': 1.60, 'roll': 0.0, 'pitch': 2.0, 'yaw': -15.0,
-             'width': 500, 'height': 300, 'shutter_speed': 100,'fov': 30, 'id': 'rowright'}
+            {'type': 'sensor.camera.rgb', 'x': 1.7, 'y': 0.4, 'z': 1.60, 'roll': -0.0, 'pitch': 0.0, 'yaw': 60.0,
+             'width': 500, 'height': 300, 'shutter_speed': 50,'fov': 100, 'id': 'rowright'},
+            {'type': 'sensor.camera.rgb', 'x': 1.7, 'y': 0.4, 'z': 1.60, 'roll': 0.0, 'pitch': 0.0, 'yaw': -60.0,
+             'width': 500, 'height': 300, 'shutter_speed': 50,'fov': 100, 'id': 'rowleft'}
         ]
 
         return sensors
@@ -79,18 +82,25 @@ class NpcAgent(AutonomousAgent):
         Execute one step of navigation.
         """
         print("=====================>")
-        cv2.imshow('left',annotate_image(input_data["Left"][1][:,:,:3]))
-        cv2.waitKey(50)
+        # cv2.imshow('left',annotate_image(input_data["Left"][1][:,:,:3]))
+        # cv2.waitKey(50)
         # a=run(img = input_data["Right"][1][:,:,:3])
         # a=light_detect(input_data["Right"][1][:,:,:3])
         
-        # r=light_detect(input_data["rowright"][1][:,:,:3])
-        # l=light_detect(input_data["rowleft"][1][:,:,:3])
-        # com = np.concatenate((a,l,r),axis=1)
-
-
-        # cv2.imshow('right',a)
+        a = input_data["Middle"][1][:,:,:3]  
+        # r=input_data["rowright"][1][:,:,:3]
+        # l=input_data["rowleft"][1][:,:,:3]
+        # stitcher = Stitcher()
+        # paro = stitcher.stitch(a, r, l)
+        img,map = mapping(a)
+        # com = np.concatenate((img),axis=1)
+        cv2.imshow('middle',img)
+        cv2.waitKey(50)
+        cv2.imshow('map',map)
+        cv2.waitKey(50)
+        # cv2.imshow('left',com)
         # cv2.waitKey(50)
+        
         # save_dir = f'C:/Users/22780/Documents/CARLA_0.9.13/leaderboard/scenario_runner/srunner/autoagents/myagent/video/img_{timestamp}.png'
         # status = cv2.imwrite(save_dir,a)#input_data["Left"][1][:,:,:3])
         # print(status)

@@ -5,6 +5,12 @@ visual/lane_detection/Driver_Guidance_System/
 visual/lane_detection/YOLOv5-Model-with-Lane-Detection/
 visual/traffic_light/TrafficLight_Detector/light/
 video/
-test.py
 visual/lane_detection/copilot/
 visual/lane_detection/pytorch-auto-drive/
+visual/lane_detection/advanced_lane_detection/camera_cal/
+visual/lane_detection/advanced_lane_detection/challenge_video.mp4
+visual/lane_detection/advanced_lane_detection/out.mp4
+visual/lane_detection/advanced_lane_detection/output_images/
+visual/lane_detection/advanced_lane_detection/project_video.mp4
+visual/lane_detection/advanced_lane_detection/test.py
+visual/lane_detection/advanced_lane_detection/test_images/
