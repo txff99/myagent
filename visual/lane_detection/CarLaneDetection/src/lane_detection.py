@@ -6,14 +6,14 @@ import math
 class lane_detection(object):
     def __init__(self):
         self.blur_ksize = 1  # Gaussian blur kernel size
-        self.canny_lthreshold = 30  # Canny edge detection low threshold
+        self.canny_lthreshold = 20  # Canny edge detection low threshold
         self.canny_hthreshold = 100  # Canny edge detection high threshold
 
         # Hough transform parameters
         self.rho = 1
         self.theta = np.pi / 180
-        self.threshold = 40
-        self.min_line_length = 50
+        self.threshold = 30
+        self.min_line_length = 30
         self.max_line_gap = 200
         self.slope = []
 
@@ -60,7 +60,7 @@ class lane_detection(object):
                                 maxLineGap=self.max_line_gap)
         
         line_img = np.zeros((img.shape[0], img.shape[1], 3), dtype=np.uint8)
-        print(str(type(lines)))
+        # print(str(type(lines)))
         if str(type(lines)) == "<class 'numpy.ndarray'>":
             self.draw_lanes(line_img, lines)
         return line_img
@@ -175,7 +175,10 @@ def lane_detect(img):
     # self.threshold = 40
     # self.min_line_length = 50
     # self.max_line_gap = 200
-    roi_vtx = np.array([[(0, img.shape[0]-70), (400, 530), (450,430),(500,430),(img.shape[1], 600) ,(img.shape[1], img.shape[0]-70)]])
+    # roi_vtx = np.array([[(0, img.shape[0]-70),  (450,430),(500,430),(img.shape[1], 600) ,(img.shape[1], img.shape[0]-70)]])
+    roi_vtx = np.array([[(43, 596),  (1230, 596),
+		(553, 410),
+		(795, 410)]])
 
     gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     # img_hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
@@ -229,7 +232,7 @@ def lane_detect(img):
     # plt.show()
 
 
-    return res_img
+    return res_img, roi_edges
 
 
     # img = mplimg.imread("../resources/lane.jpg")

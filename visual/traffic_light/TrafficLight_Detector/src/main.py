@@ -19,13 +19,13 @@ def light_detect(img):
     # color range
     lower_red1 = np.array([0,100,100])
     upper_red1 = np.array([10,255,255])
-    lower_red2 = np.array([160,100,100])
+    lower_red2 = np.array([160,150,150])
     upper_red2 = np.array([180,255,255])
     lower_green = np.array([40,150,150])
     upper_green = np.array([90,255,255])
     # lower_yellow = np.array([15,100,100])
     # upper_yellow = np.array([35,255,255])
-    lower_yellow = np.array([15,150,150])
+    lower_yellow = np.array([15,170,170])
     upper_yellow = np.array([35,255,255])
     mask1 = cv2.inRange(hsv, lower_red1, upper_red1)
     mask2 = cv2.inRange(hsv, lower_red2, upper_red2)
@@ -35,28 +35,30 @@ def light_detect(img):
 
     size = img.shape
     # print size
-    # cv2.imshow('',maskg)
-    # cv2.waitKey(10)
+    cv2.imshow('maskg',maskr)
+    cv2.waitKey(50)
     # hough circle detect
-    r_circles = cv2.HoughCircles(maskr, cv2.HOUGH_GRADIENT, 1, 80,
-                               param1=50, param2=10, minRadius=0, maxRadius=30)
+    r_circles = cv2.HoughCircles(maskr, cv2.HOUGH_GRADIENT, 1, 50,
+                               param1=20, param2=5, minRadius=1, maxRadius=30)
 
-    g_circles = cv2.HoughCircles(maskg, cv2.HOUGH_GRADIENT, 1, 60,
-                                 param1=50, param2=10, minRadius=0, maxRadius=30)
+    g_circles = cv2.HoughCircles(maskg, cv2.HOUGH_GRADIENT, 1, 50,
+                                 param1=50, param2=5, minRadius=1, maxRadius=30)
 
     y_circles = cv2.HoughCircles(masky, cv2.HOUGH_GRADIENT, 1, 30,
-                                 param1=50, param2=5, minRadius=0, maxRadius=30)
+                                 param1=50, param2=5, minRadius=1, maxRadius=30)
 
     cimg = np.ascontiguousarray(cimg)
     # traffic light detect
     r = 5
-    bound = 4.0 / 10
+    bound = 0.2#4.0 / 10
     if r_circles is not None:
         r_circles = np.uint16(np.around(r_circles))
-
         for i in r_circles[0, :]:
-            if i[0] > size[1] or i[1] > size[0]or i[1] > size[0]*bound:
-                continue
+            print(i[0])
+            print(i[1])
+            # if i[0] > size[1] or i[1] > size[0]or i[1] > size[0]*bound:
+            #     continue
+            print(1)
 
             h, s = 0.0, 0.0
             for m in range(-r, r):
@@ -67,16 +69,18 @@ def light_detect(img):
                     h += maskr[i[1]+m, i[0]+n]
                     s += 1
             if h / s > 50:
+                # print(i[2])#i[2] is radius
                 cv2.circle(cimg, (i[0], i[1]), i[2]+10, (0, 255, 0), 2)
                 cv2.circle(maskr, (i[0], i[1]), i[2]+30, (255, 255, 255), 2)
                 cv2.putText(cimg,'RED',(i[0], i[1]), font, 1,(255,0,0),2,cv2.LINE_AA)
+                cv2.putText(cimg,f'd={int(100/i[2])}',(i[0], i[1]-30), font, 1,(255,0,0),2,cv2.LINE_AA) 
 
     if g_circles is not None:
         g_circles = np.uint16(np.around(g_circles))
 
         for i in g_circles[0, :]:
-            if i[0] > size[1] or i[1] > size[0] or i[1] > size[0]*bound:
-                continue
+            # if i[0] > size[1] or i[1] > size[0] or i[1] > size[0]*bound:
+            #     continue
 
             h, s = 0.0, 0.0
             for m in range(-r, r):
@@ -86,17 +90,19 @@ def light_detect(img):
                         continue
                     h += maskg[i[1]+m, i[0]+n]
                     s += 1
-            if h / s > 100:
+            if h / s > 50:
+                # print(i[2])
                 cv2.circle(cimg, (i[0], i[1]), i[2]+10, (0, 255, 0), 2)
                 cv2.circle(maskg, (i[0], i[1]), i[2]+30, (255, 255, 255), 2)
                 cv2.putText(cimg,'GREEN',(i[0], i[1]), font, 1,(255,0,0),2,cv2.LINE_AA)
+                cv2.putText(cimg,f'd={int(100/i[2])}',(i[0], i[1]-30), font, 1,(255,0,0),2,cv2.LINE_AA)
 
     if y_circles is not None:
         y_circles = np.uint16(np.around(y_circles))
 
         for i in y_circles[0, :]:
-            if i[0] > size[1] or i[1] > size[0] or i[1] > size[0]*bound:
-                continue
+            # if i[0] > size[1] or i[1] > size[0] or i[1] > size[0]*bound:
+            #     continue
 
             h, s = 0.0, 0.0
             for m in range(-r, r):
@@ -107,9 +113,11 @@ def light_detect(img):
                     h += masky[i[1]+m, i[0]+n]
                     s += 1
             if h / s > 50:
+                # print(i[2])
                 cv2.circle(cimg, (i[0], i[1]), i[2]+10, (0, 255, 0), 2)
                 cv2.circle(masky, (i[0], i[1]), i[2]+30, (255, 255, 255), 2)
                 cv2.putText(cimg,'YELLOW',(i[0], i[1]), font, 1,(255,0,0),2,cv2.LINE_AA)
+                cv2.putText(cimg,f'd={int(100/i[2])}',(i[0], i[1]-30), font, 1,(255,0,0),2,cv2.LINE_AA)
     return cimg
     # cv2.imshow('detected results', cimg)
     # cv2.imwrite(path+'//result//'+file, cimg)
