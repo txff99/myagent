@@ -18,12 +18,12 @@ from srunner.scenariomanager.carla_data_provider import CarlaDataProvider
 from visual.lane_detection.CarLaneDetection.src.lane_detection import lane_detect
 # from lane_detection.Advanced_Lane_Lines.pipeline import Pipeline, Line,img_process
 # from lane_detection.Driver_Guidance_System.lanes import img_process
-from visual.traffic_light.TrafficLight_Detector.src.main import light_detect
+from visual.traffic_light.TrafficLight_Detector.src.main import light
 # from distance_detection.vehicle_distance.yolo import YOLO
 from visual.distance_detection.yolov5.detect import run
 from visual.lane_detection.Lane_Detection.Lane_Detection_window import parse_image
 from visual.lane_detection.advanced_lane_detection.line_fit_video import annotate_image
-from mapping.mapping import mapping
+from mapping.local_map import local_mapping
 from mapping.global_map import global_mapping
 import numpy as np
 from mapping.location2np import carla_location_to_numpy_vector
@@ -67,13 +67,13 @@ class NpcAgent(AutonomousAgent):
             {'type': 'sensor.camera.rgb', 'x': 1.7, 'y': -0.4, 'z': 1.60, 'roll': 0.0, 'pitch': 0.0, 'yaw': 0.0,
              'width': 1280, 'height': 720, 'fov': 100, 'id': 'Left'},
             {'type': 'sensor.camera.rgb', 'x': 1.7, 'y': 0, 'z': 1.60, 'roll': 0.0, 'pitch': -5.0, 'yaw': 0.0,
-             'width': 1500, 'height': 500, 'fov': 125, 'id': 'Middle'},
-            {'type': 'sensor.camera.rgb', 'x': 1.7, 'y': 0.4, 'z': 1.60, 'roll': 0.0, 'pitch': 5.0, 'yaw': 0.0,
-             'width': 1000, 'height': 600, 'shutter_speed': 100,'fov': 20, 'id': 'Right'},
-            {'type': 'sensor.camera.rgb', 'x': 1.7, 'y': 0.4, 'z': 1.60, 'roll': -0.0, 'pitch': 0.0, 'yaw': 60.0,
-             'width': 500, 'height': 300, 'shutter_speed': 50,'fov': 100, 'id': 'rowright'},
-            {'type': 'sensor.camera.rgb', 'x': 1.7, 'y': 0.4, 'z': 1.60, 'roll': 0.0, 'pitch': 0.0, 'yaw': -60.0,
-             'width': 500, 'height': 300, 'shutter_speed': 50,'fov': 100, 'id': 'rowleft'}
+             'width': 500, 'height': 400, 'fov': 100, 'id': 'Middle'},
+            {'type': 'sensor.camera.rgb', 'x': 1.7, 'y': 0.4, 'z': 1.60, 'roll': 0.0, 'pitch': 7.0, 'yaw': 0.0,
+             'width': 400, 'height': 300, 'fov': 15, 'id': 'row'},
+            {'type': 'sensor.camera.rgb', 'x': 1.7, 'y': 0.4, 'z': 1.60, 'roll': -0.0, 'pitch': 7.0, 'yaw': 15.0,
+             'width': 400, 'height': 300, 'fov': 15, 'id': 'rowright'},
+            {'type': 'sensor.camera.rgb', 'x': 1.7, 'y': 0.4, 'z': 1.60, 'roll': 0.0, 'pitch': 7.0, 'yaw': -15.0,
+             'width': 400, 'height': 300, 'fov': 15, 'id': 'rowleft'}
         ]
 
         return sensors
@@ -89,18 +89,21 @@ class NpcAgent(AutonomousAgent):
         # a=light_detect(input_data["Right"][1][:,:,:3])
         
         a = input_data["Middle"][1][:,:,:3]  
-        # # r=input_data["rowright"][1][:,:,:3]
-        # # l=input_data["rowleft"][1][:,:,:3]
+        r=input_data["rowright"][1][:,:,:3]
+        l=input_data["rowleft"][1][:,:,:3]
+        m=input_data["row"][1][:,:,:3]
         # # stitcher = Stitcher()
         # # paro = stitcher.stitch(a, r, l)
         # img,map = mapping(a)
-        # # com = np.concatenate((img),axis=1)
+        com = np.concatenate((l,m,r),axis=1)
+    
         # cv2.imshow('middle',img)
         # cv2.waitKey(50)
         # cv2.imshow('map',map)
         # cv2.waitKey(50)
-        # cv2.imshow('left',com)
-        # cv2.waitKey(50)
+        li = light()
+        cv2.imshow('traffic',li.light_detect(com))
+        cv2.waitKey(50)
         
         # save_dir = f'C:/Users/22780/Documents/CARLA_0.9.13/leaderboard/scenario_runner/srunner/autoagents/myagent/video/img_{timestamp}.png'
         # status = cv2.imwrite(save_dir,a)#input_data["Left"][1][:,:,:3])
@@ -173,10 +176,11 @@ class NpcAgent(AutonomousAgent):
             if len(pack)>1:
                 control,location,local_route=pack
                 dis,angle = global_mapping(self.route,location,local_route)
-                img,map = mapping(a,dis,angle)
+                img,map = local_mapping(a,dis,angle,li.light_position)
                 cv2.imshow('11',map)
                 cv2.waitKey(50)
-
+                cv2.imshow('121',img)
+                cv2.waitKey(50)
 
             else:
                 control = pack[0]
