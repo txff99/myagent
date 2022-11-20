@@ -88,7 +88,7 @@ class NpcAgent(AutonomousAgent):
         # a=run(img = input_data["Right"][1][:,:,:3])
         # a=light_detect(input_data["Right"][1][:,:,:3])
         
-        # a = input_data["Middle"][1][:,:,:3]  
+        a = input_data["Middle"][1][:,:,:3]  
         # # r=input_data["rowright"][1][:,:,:3]
         # # l=input_data["rowleft"][1][:,:,:3]
         # # stitcher = Stitcher()
@@ -158,22 +158,32 @@ class NpcAgent(AutonomousAgent):
                 # print(plan[3][0])
                 # print(len(plan))
                 # exit()
+
+                # print(self.route)
+                # f="C:/Users/22780/Documents/CARLA_0.9.13/leaderboard/scenario_runner/srunner/autoagents/myagent/map.txt"
+                # np.savetxt(f,np.array(self.route))
                 
                 self._agent._local_planner.set_global_plan(plan)  # pylint: disable=protected-access
                 self._route_assigned = True
+                
         
         else:
             pack = self._agent.run_step()
             # print(pack)
             if len(pack)>1:
                 control,location,local_route=pack
-                global_mapping(self.route,location,local_route)
+                dis,angle = global_mapping(self.route,location,local_route)
+                img,map = mapping(a,dis,angle)
+                cv2.imshow('11',map)
+                cv2.waitKey(50)
+
+
             else:
                 control = pack[0]
 
 
         return control
 
-# set CARLA_ROOT=C:/Users/22780/Documents/CARLA_0.9.10.1w/WindowsNoEditor &&set LEADERBOARD_ROOT=C:/Users/22780/Documents/CARLA_0.9.13/leaderboardset &&set SCENARIO_RUNNER_ROOT=C:/Users/22780/Documents/CARLA_0.9.13/leaderboard/scenario_runner &&set PYTHONPATH=C:/Users/22780/Documents/CARLA_0.9.10.1w/WindowsNoEditor/PythonAPI/carla/;C:/Users/22780/Documents/CARLA_0.9.13/leaderboard;C:/Users/22780/Documents/CARLA_0.9.13/leaderboard/scenario_runner;C:/Users/22780/Documents/CARLA_0.9.10.1w/WindowsNoEditor/PythonAPI/carla/dist/carla-0.9.10-py3.7-win-amd64.egg &&cd C:/Users\22780\Documents\CARLA_0.9.13\leaderboard\scenario_runner &&conda activate py37 &&python scenario_runner.py --route srunner/data/routes_devtest.xml srunner/data/all_towns_traffic_scenarios.json 8 --agent srunner/autoagents/npc_agent.py --debug 
+# set CARLA_ROOT=C:/Users/22780/Documents/CARLA_0.9.10.1w/WindowsNoEditor &&set LEADERBOARD_ROOT=C:/Users/22780/Documents/CARLA_0.9.13/leaderboardset &&set SCENARIO_RUNNER_ROOT=C:/Users/22780/Documents/CARLA_0.9.13/leaderboard/scenario_runner &&set PYTHONPATH=C:/Users/22780/Documents/CARLA_0.9.10.1w/WindowsNoEditor/PythonAPI/carla/;C:/Users/22780/Documents/CARLA_0.9.13/leaderboard;C:/Users/22780/Documents/CARLA_0.9.13/leaderboard/scenario_runner;C:/Users/22780/Documents/CARLA_0.9.10.1w/WindowsNoEditor/PythonAPI/carla/dist/carla-0.9.10-py3.7-win-amd64.egg &&cd C:/Users/22780\Documents\CARLA_0.9.13\leaderboard\scenario_runner &&conda activate py37 &&python scenario_runner.py --route srunner/data/routes_devtest.xml srunner/data/all_towns_traffic_scenarios.json 8 --agent srunner/autoagents/npc_agent.py --debug 
 
 # set CARLA_ROOT=C:/Users/22780/Documents/CARLA_0.9.10.1w/WindowsNoEditor &&set LEADERBOARD_ROOT=C:/Users/22780/Documents/CARLA_0.9.13/leaderboardset &&set SCENARIO_RUNNER_ROOT=C:/Users/22780/Documents/CARLA_0.9.13/leaderboard/scenario_runner &&set PYTHONPATH=C:/Users/22780/Documents/CARLA_0.9.10.1w/WindowsNoEditor/PythonAPI/carla/;C:/Users/22780/Documents/CARLA_0.9.13/leaderboard;C:/Users/22780/Documents/CARLA_0.9.13/leaderboard/scenario_runner;C:/Users/22780/Documents/CARLA_0.9.10.1w/WindowsNoEditor/PythonAPI/carla/dist/carla-0.9.10-py3.7-win-amd64.egg &&cd C:\Users\22780\Documents\CARLA_0.9.13\leaderboard\scenario_runner &&conda activate py37 &&python scenario_runner.py --route srunner/data/routes_debug.xml srunner/data/all_towns_traffic_scenarios1_3_4.json 0 --agent srunner/autoagents/myagent/npc_agent.py

@@ -14,3 +14,10 @@ def carla_location_to_numpy_vector(carla_location):
         -carla_location.y,
         carla_location.z
     ])
+
+def carla_rotation_to_numpy_vector(rotation):
+    return numpy.array([
+        rotation.pitch,
+        rotation.yaw,
+        rotation.roll
+    ])

@@ -10,7 +10,7 @@ import io
 import matplotlib.pyplot as plt
 
 
-def mapping(a):
+def mapping(a,route_dis, route_angle):
     
 
     img, mes = run(img=a)
@@ -60,11 +60,12 @@ def mapping(a):
         #         r.append(dis)
         # else:
         #     print(3)
+
         dis = dis.cpu().numpy()/2
         theta.append(angle)
         r.append(dis)
         
-        # print(new)
+        # label
         if new=='car':
             color.append('g')
         elif new=='motorcycle':
@@ -92,8 +93,10 @@ def mapping(a):
     ax.set_title('yellow-truck\nblue-person\ngreen-car', 
              pad=-5,
              fontsize = 14)
-    # print(color)
-    c = ax.scatter(theta, r,c=color, s=area, cmap='cool', alpha=0.75)
+    
+    print()
+    ax.scatter(theta, r,c=color, s=area, cmap='cool', alpha=0.75)
+    ax.scatter([i*np.pi/180 for i in route_angle],route_dis,c='black',s=2**2)
     # plt.axis('off')
     plot_img_np = get_img_from_fig(fig)
     return img,plot_img_np
