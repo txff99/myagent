@@ -13,7 +13,7 @@ sys.path.append("..")
 from visual.distance_detection.yolov5.detect import run
 
 
-def local_mapping(img,
+def local_mapping(img=None,
                 route_dis=None, 
                 route_angle=None,
                 traffic_light=None):
@@ -30,12 +30,28 @@ def local_mapping(img,
     ax.grid(True, linestyle="-", color="k", linewidth=0.5, alpha=0.5)
     ax.set_axisbelow('True')  # 使散点覆盖在坐标系之上
     
-    ax.set_title('yellow-truck\nblue-person\ngreen-car', 
+    ax.set_title('yellow-truck\nred-person\ngreen-car\ncircle-traffic light', 
              pad=-5,
              fontsize = 14)
+    #plot object
+    if img.any():
+        theta,r,color = plot_object(img)
+        ax.scatter(theta, r,c=color,marker=',', s=10**2, cmap='cool', alpha=0.75)
+    #plot route
+    if route_dis:
+        theta,r=plot_route(route_dis,route_angle)
+        ax.scatter(theta,r,c='black',s=2**2)
+    #plot traffic light
+    if traffic_light:
+        theta,r,color=plot_traffic_light(traffic_light)
+        ax.scatter(theta, r, c=color)
+    plot_img_np = get_img_from_fig(fig)
+    return img,plot_img_np
+        
     
     
-    img, mes = run(img=img)
+def plot_object(img):
+    img, mes = run(img=img)#object_detection
     _,size,_ = img.shape
     r = []
     theta = []
@@ -44,7 +60,7 @@ def local_mapping(img,
         new = ''.join([i for i in i[2] if not i.isdigit()])
         new=new.replace('.','')
         new=new.replace(' ','')
-       
+    
         if new!='car' and new!='truck'and new!='person'and new!='motorcycle':
             break
         angle, dis= i[0],i[1]
@@ -55,7 +71,7 @@ def local_mapping(img,
             theta.append(angle)
             r.append(dis)
 
-        # label
+            # label
             if new=='car':
                 color.append('g')
             elif new=='motorcycle':
@@ -63,29 +79,28 @@ def local_mapping(img,
             elif new=='truck':
                 color.append('c')
             elif new=='person':
-                color.append('r')
+                color.append('blue')
+    return theta, r,color
 
 
-    area = 7**2 #面积
-    #plot vehicle
-    ax.scatter(theta, r,c=color, s=area, cmap='cool', alpha=0.75)
     
     
     #plot route
+def plot_route(route_dis,route_angle):
     if route_dis and route_angle:
-        ax.scatter([i*np.pi/180 for i in route_angle],route_dis,c='black',s=2**2)
-    
-    
-    #plot traffic light
+        theta=[i*np.pi/180 for i in route_angle]
+        r=route_dis
+        return theta,r
+
+
+#plot traffic light
+def plot_traffic_light(traffic_light):
     if traffic_light:
         theta = []
         r=[]
         color=[]
         for light in traffic_light:
             angle, dis = light[0],light[1]
-            
-            
-            
             angle = 0.625*np.pi-angle*(np.pi*0.25)/1200
             dis = 100*dis
             print(f"d={dis}"+light[2])
@@ -93,22 +108,14 @@ def local_mapping(img,
             r.append(dis)
         
         # label
-            print(light[2])
             if light[2]=='red':
-                color.append('r')
-            elif light[2]=='y':
-                color.append('Yellow')
+                color.append('blue')
+            elif light[2]=='yellow':
+                color.append('orange')
             elif light[2]=='green':
-                color.append('g')
-            # elif new=='person':
-            #     color.append('r')
-        # print(theta)
-        # print(color)
-        ax.scatter(theta, r, c=color,marker=',')
+                color.append('green')
+    return theta, r, color
 
-    # plt.axis('off')
-    plot_img_np = get_img_from_fig(fig)
-    return img,plot_img_np
 
 
 def get_img_from_fig(fig, dpi=180):

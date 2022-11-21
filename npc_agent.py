@@ -68,11 +68,11 @@ class NpcAgent(AutonomousAgent):
              'width': 1280, 'height': 720, 'fov': 100, 'id': 'Left'},
             {'type': 'sensor.camera.rgb', 'x': 1.7, 'y': 0, 'z': 1.60, 'roll': 0.0, 'pitch': -5.0, 'yaw': 0.0,
              'width': 500, 'height': 400, 'fov': 100, 'id': 'Middle'},
-            {'type': 'sensor.camera.rgb', 'x': 1.7, 'y': 0.4, 'z': 1.60, 'roll': 0.0, 'pitch': 7.0, 'yaw': 0.0,
+            {'type': 'sensor.camera.rgb', 'x': 1.7, 'y': 0.4, 'z': 1.60, 'roll': 0.0, 'pitch': 8.0, 'yaw': 0.0,
              'width': 400, 'height': 300, 'fov': 15, 'id': 'row'},
-            {'type': 'sensor.camera.rgb', 'x': 1.7, 'y': 0.4, 'z': 1.60, 'roll': -0.0, 'pitch': 7.0, 'yaw': 15.0,
+            {'type': 'sensor.camera.rgb', 'x': 1.7, 'y': 0.4, 'z': 1.60, 'roll': -0.0, 'pitch': 8.0, 'yaw': 15.0,
              'width': 400, 'height': 300, 'fov': 15, 'id': 'rowright'},
-            {'type': 'sensor.camera.rgb', 'x': 1.7, 'y': 0.4, 'z': 1.60, 'roll': 0.0, 'pitch': 7.0, 'yaw': -15.0,
+            {'type': 'sensor.camera.rgb', 'x': 1.7, 'y': 0.4, 'z': 1.60, 'roll': 0.0, 'pitch': 8.0, 'yaw': -15.0,
              'width': 400, 'height': 300, 'fov': 15, 'id': 'rowleft'}
         ]
 
@@ -102,8 +102,11 @@ class NpcAgent(AutonomousAgent):
         # cv2.imshow('map',map)
         # cv2.waitKey(50)
         li = light()
+        # img,_=run(img=com)
+        # cv2.imshow('3',img) 
+        # cv2.waitKey(20)
         cv2.imshow('traffic',li.light_detect(com))
-        cv2.waitKey(50)
+        # cv2.waitKey(50)
         
         # save_dir = f'C:/Users/22780/Documents/CARLA_0.9.13/leaderboard/scenario_runner/srunner/autoagents/myagent/video/img_{timestamp}.png'
         # status = cv2.imwrite(save_dir,a)#input_data["Left"][1][:,:,:3])
