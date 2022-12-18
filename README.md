@@ -9,11 +9,11 @@ Running route-based scenario
 https://carla-scenariorunner.readthedocs.io/en/latest/getting_started/  
 
 
-##Architecture 
-<img src="https://github.com/txff99/myagent/blob/main/demo/architecture.png" width="150px"> 
-<img src="https://github.com/txff99/myagent/blob/main/demo/perception.png" width="150px"> 
-<img src="https://github.com/txff99/myagent/blob/main/demo/mapping.png" width="150px"> 
-<img src="https://github.com/txff99/myagent/blob/main/demo/planning.png" width="150px">  
+## Architecture 
+<img src="https://github.com/txff99/myagent/blob/main/demo/architecture.png" width="300px">  
+<img src="https://github.com/txff99/myagent/blob/main/demo/perception.png" width="300px">  
+<img src="https://github.com/txff99/myagent/blob/main/demo/mapping.png" width="300px">  
+<img src="https://github.com/txff99/myagent/blob/main/demo/planning.png" width="300px">   
 
-## Interface ##  
-<img src="https://github.com/txff99/myagent/blob/main/demo/interface.png" width="150px">  
+## Interface   
+<img src="https://github.com/txff99/myagent/blob/main/demo/interface.png" width="300px">  
