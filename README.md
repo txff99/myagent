@@ -5,7 +5,7 @@
 Coursework in Tongji University using Carla Driving Simulator to build a self-driving agent.  
 
 Using learderboard ScenarioRunner  
-Running route-based scenario  
+Run route-based scenario  
 https://carla-scenariorunner.readthedocs.io/en/latest/getting_started/  
 
 
