@@ -40,17 +40,17 @@ class light(object):
 
         size = img.shape
         # print size
-        # cv2.imshow('maskg',maskr)
+        # cv2.imshow('maskg',maskg)
         # cv2.waitKey(50)
         # hough circle detect
         r_circles = cv2.HoughCircles(maskr, cv2.HOUGH_GRADIENT, 1, 50,
-                                param1=100, param2=12, minRadius=2, maxRadius=10)
+                                param1=100, param2=11, minRadius=2, maxRadius=10)
 
         g_circles = cv2.HoughCircles(maskg, cv2.HOUGH_GRADIENT, 1, 50,
-                                    param1=100, param2=12, minRadius=2, maxRadius=10)
+                                    param1=100, param2=11, minRadius=2, maxRadius=10)
 
         y_circles = cv2.HoughCircles(masky, cv2.HOUGH_GRADIENT, 1, 30,
-                                    param1=100, param2=12, minRadius=2, maxRadius=10)
+                                    param1=100, param2=11, minRadius=2, maxRadius=10)
 
         cimg = np.ascontiguousarray(cimg)
         # traffic light detect

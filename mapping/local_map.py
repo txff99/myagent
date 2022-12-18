@@ -35,7 +35,7 @@ def local_mapping(img=None,
              fontsize = 14)
     #plot object
     if img.any():
-        theta,r,color = plot_object(img)
+        img,theta,r,color = plot_object(img)
         ax.scatter(theta, r,c=color,marker=',', s=10**2, cmap='cool', alpha=0.75)
     #plot route
     if route_dis:
@@ -80,7 +80,7 @@ def plot_object(img):
                 color.append('c')
             elif new=='person':
                 color.append('blue')
-    return theta, r,color
+    return img,theta, r,color
 
 
     

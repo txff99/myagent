@@ -124,7 +124,7 @@ class Annotator:
                                 lineType=cv2.LINE_AA)
                     #car distance
                     if 'truck' in label:
-                        original_height = 60 # in inch
+                        original_height = 100 # in inch
                     elif 'car' in label:
                         original_height = 80
                     else:

@@ -33,9 +33,9 @@ def global_mapping(route,current,local_route):
     
 
     plot_img_np = get_img_from_fig(fig)
-    cv2.imshow('',plot_img_np)
-    cv2.waitKey(50)
-    return dis, angle
+    # cv2.imshow('',plot_img_np)
+    # cv2.waitKey(50)
+    return dis, angle, plot_img_np
 
 def global2local(location, rotation, local_route):
     dis = []
