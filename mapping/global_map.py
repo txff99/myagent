@@ -43,6 +43,4 @@ def global2local(location, rotation, local_route):
     for i in local_route:
         dis.append(math.sqrt((i[0]-location[0])**2+(i[1]-location[1])**2)*0.7)
         angle.append(180-math.atan2((i[0]-location[0]),(i[1]-location[1]))*180/np.pi+rotation[1])
-    # print(angle[0])
-    # print(dis[0])
     return dis,angle

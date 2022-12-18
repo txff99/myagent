@@ -15,3 +15,5 @@ visual/lane_detection/advanced_lane_detection/project_video.mp4
 visual/lane_detection/advanced_lane_detection/test.py
 visual/lane_detection/advanced_lane_detection/test_images/
 mapping/stitching/
+control/MPC/
+map.txt

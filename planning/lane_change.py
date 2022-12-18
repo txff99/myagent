@@ -16,7 +16,8 @@ def change_lane(waypoint):
     right_wpt = waypoint.get_right_lane()
 
     if (left_turn == carla.LaneChange.Left or left_turn ==
-        carla.LaneChange.Both) and waypoint.lane_id * left_wpt.lane_id > 0 and left_wpt.lane_type == carla.LaneType.Driving:
+        carla.LaneChange.Both) and waypoint.lane_id * left_wpt.lane_id > 0 and\
+             left_wpt.lane_type == carla.LaneType.Driving:
       
         print("Overtaking to the left!")
         return left_wpt.transform.location
