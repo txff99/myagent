@@ -1,6 +1,6 @@
 
 
-# First attempt on Self-driving car  
+# Self-driving agent on Carla
 
 Coursework in Tongji University using Carla Driving Simulator to build a self-driving agent.  
 
